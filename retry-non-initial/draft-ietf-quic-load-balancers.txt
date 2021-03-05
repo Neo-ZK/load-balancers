@@ -1113,7 +1113,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
    *  If a Retry Service keeps per-flow state, it can identify 4-tuples
       that have been previously approved, admit non-Initial packets from
-      those flows, and drop all others.  However, this rule will
+      those flows, and drop all others.  However, dropping short headers
 
 
 
@@ -1122,7 +1122,7 @@ Duke & Banks            Expires 6 September 2021               [Page 20]
 Internet-Draft                   QUIC-LB                      March 2021
 
 
-      effectively break Address Migration and NAT Rebinding when in
+      will effectively break Address Migration and NAT Rebinding when in
       Active Mode, as post-migration packets will arrive with a
       previously unknown 4-tuple.  This policy will also break
       connection attempts using any new QUIC versions that begin

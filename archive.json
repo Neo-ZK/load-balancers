@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-02-24T18:34:56.241119+00:00",
+  "timestamp": "2021-03-05T17:01:51.487213+00:00",
   "repo": "quicwg/load-balancers",
   "labels": [
     {
@@ -1693,6 +1693,37 @@
           "body": "Closed by #90 ",
           "createdAt": "2021-02-04T20:37:05Z",
           "updatedAt": "2021-02-04T20:37:05Z"
+        }
+      ]
+    },
+    {
+      "number": 96,
+      "id": "MDU6SXNzdWU4MjI1OTMyNjI=",
+      "title": "Retry service handling of non-Initial",
+      "url": "https://github.com/quicwg/load-balancers/issues/96",
+      "state": "OPEN",
+      "author": "martinduke",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "In Section 7:\r\n\"Retry services MUST forward all QUIC packets that are not of type Initial or 0-RTT. Other packet types might involve changed IP addresses or connection IDs, so it is not practical for Retry Services to identify such packets as valid or invalid.\"\r\n\r\nMUST is too strong. If it keeps any state (i.e. tracking 4-tuples) it can drop non-initial packets. (However, this would make migration not work).\r\n\r\nIf the Retry Service is in front of a QUIC-LB load balancer, the LB will drop random 1-RTT packets but not Handshake and 0-RTT unless it is version-aware, so passing 1-RTT is \"safe.\"\r\n\r\nIf the Retry Service is behind the load balancer, which is probably better because LBs are often NATs, then random 1-RTT is already dropped and it is safe to forward 1-RTT to preserve migration.\r\n\r\nIf there's a non QUIC-LB load balancers, migration doesn't work anyway; might as well drop it.\r\n\r\nIf it's a single server and the CIDs are random, admitting 1-RTT is weakening the DoS defense.\r\n\r\nAnd then there is the issue with QUIC versions and admitting/dropping them, which is hard to adjudicate with short headers.\r\n\r\n",
+      "createdAt": "2021-03-04T23:27:29Z",
+      "updatedAt": "2021-03-05T16:59:17Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "nibanks",
+          "authorAssociation": "MEMBER",
+          "body": "I don't know. Do you have a case where Retry services should not forward those packets? I don't want this to be a source of ossification because of a possibly incorrect assumption about placement of the retry service in the pipeline.",
+          "createdAt": "2021-03-05T00:32:50Z",
+          "updatedAt": "2021-03-05T00:32:50Z"
+        },
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Well, the reason to not forward them is to block DDoS vectors. A garbage Handshake or 1-RTT packets is at least easily discarded by the server without much in the way of processing. I would actually appreciate some input from your Azure contacts about this; is filtering non-SYN packets important today?",
+          "createdAt": "2021-03-05T16:59:17Z",
+          "updatedAt": "2021-03-05T16:59:17Z"
         }
       ]
     }
@@ -5005,24 +5036,26 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NTY4MDM4NTYz",
       "title": "Ian's Editorial Nits",
       "url": "https://github.com/quicwg/load-balancers/pull/95",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ianswett",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Here are some suggestions from my first pass, but overall I think the static vs dynamic server ID allocation idea works nicely.\r\n\r\n2 Q's:\r\n- Is the definition of non-compliant different at LB and server in some cases?\r\n- Might non-routable be a better term than non-compliant?",
       "createdAt": "2021-02-05T02:19:53Z",
-      "updatedAt": "2021-02-05T02:19:53Z",
+      "updatedAt": "2021-03-05T17:01:24Z",
       "baseRepository": "quicwg/load-balancers",
       "baseRefName": "master",
       "baseRefOid": "c9898856f1ae54b27bca79a0852e03d5e2b018fd",
       "headRepository": "ianswett/load-balancers",
       "headRefName": "patch-2",
       "headRefOid": "3148cbdf457a7e732fb354bfc0a5db036363f5b8",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2021-03-05T17:01:24Z",
+      "mergedAt": "2021-03-05T17:01:24Z",
+      "mergedBy": "martinduke",
+      "mergeCommit": {
+        "oid": "710f916f4a6f41071e0ca64665a6a3975bd0e3d4"
+      },
       "comments": [],
       "reviews": []
     }

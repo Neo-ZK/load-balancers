@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-03-05T17:01:51.487213+00:00",
+  "timestamp": "2021-03-12T22:32:49.648120+00:00",
   "repo": "quicwg/load-balancers",
   "labels": [
     {
@@ -1701,15 +1701,15 @@
       "id": "MDU6SXNzdWU4MjI1OTMyNjI=",
       "title": "Retry service handling of non-Initial",
       "url": "https://github.com/quicwg/load-balancers/issues/96",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinduke",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "In Section 7:\r\n\"Retry services MUST forward all QUIC packets that are not of type Initial or 0-RTT. Other packet types might involve changed IP addresses or connection IDs, so it is not practical for Retry Services to identify such packets as valid or invalid.\"\r\n\r\nMUST is too strong. If it keeps any state (i.e. tracking 4-tuples) it can drop non-initial packets. (However, this would make migration not work).\r\n\r\nIf the Retry Service is in front of a QUIC-LB load balancer, the LB will drop random 1-RTT packets but not Handshake and 0-RTT unless it is version-aware, so passing 1-RTT is \"safe.\"\r\n\r\nIf the Retry Service is behind the load balancer, which is probably better because LBs are often NATs, then random 1-RTT is already dropped and it is safe to forward 1-RTT to preserve migration.\r\n\r\nIf there's a non QUIC-LB load balancers, migration doesn't work anyway; might as well drop it.\r\n\r\nIf it's a single server and the CIDs are random, admitting 1-RTT is weakening the DoS defense.\r\n\r\nAnd then there is the issue with QUIC versions and admitting/dropping them, which is hard to adjudicate with short headers.\r\n\r\n",
       "createdAt": "2021-03-04T23:27:29Z",
-      "updatedAt": "2021-03-05T16:59:17Z",
-      "closedAt": null,
+      "updatedAt": "2021-03-12T22:32:28Z",
+      "closedAt": "2021-03-12T22:32:28Z",
       "comments": [
         {
           "author": "nibanks",
@@ -1724,6 +1724,68 @@
           "body": "Well, the reason to not forward them is to block DDoS vectors. A garbage Handshake or 1-RTT packets is at least easily discarded by the server without much in the way of processing. I would actually appreciate some input from your Azure contacts about this; is filtering non-SYN packets important today?",
           "createdAt": "2021-03-05T16:59:17Z",
           "updatedAt": "2021-03-05T16:59:17Z"
+        },
+        {
+          "author": "nibanks",
+          "authorAssociation": "MEMBER",
+          "body": "Here's the data I can provide: As I understand it, the DDoS would be in front of the LB. It's all in hardware so it's update cycle could be very long, so any logic added there could effectively be written in stone for many years. So, I really want to be careful about any assumptions here. If we get it wrong for a future version, either all of Azure might end up breaking/preventing future versions/features or we'd have to completely disable and lose the protection.\r\n\r\nOn the topic of dropping garbage/invalid packets, I'd be Ok with that. Perhaps we could change the text to the following?\r\n\r\n> Retry services MUST forward all **valid** QUIC packets that are not of type Initial or 0-RTT. Other packet types might involve changed IP addresses or connection IDs, so it is not practical for Retry Services to identify such packets as valid or invalid.\r\n\r\nThis adds some wiggle room for what is considered \"valid\" or not. Obviously if the header is garbage it can be tossed. If a device **knows** a particular CID is invalid, then it could drop it. I'd just strongly caution any \"smarts\" here because of the possibility of changes in the future.",
+          "createdAt": "2021-03-05T17:05:57Z",
+          "updatedAt": "2021-03-05T17:05:57Z"
+        },
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "If \"in front of the LB\" is cancnical use case, I can shade the language towards that.\r\n\r\nHowever, this makes me wonder about the shared-state case. My perception is that combining a NAT with an LB is quite common; will shared token verification work if the server and retry service are seeing different client IP addresses? This calls into question the entire shared-state concept.",
+          "createdAt": "2021-03-05T17:08:32Z",
+          "updatedAt": "2021-03-05T17:08:32Z"
+        }
+      ]
+    },
+    {
+      "number": 98,
+      "id": "MDU6SXNzdWU4MjgwMDg0MDU=",
+      "title": "Consider an alternative name to 'non-compliant'",
+      "url": "https://github.com/quicwg/load-balancers/issues/98",
+      "state": "OPEN",
+      "author": "ianswett",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "In PR #95 I suggested non-routable, though I realize non-conformant may also be an option.\r\n\r\nThe sentence which caused me to suggest non-routable is: https://github.com/quicwg/load-balancers/blob/master/draft-ietf-quic-load-balancers.md#non-compliant-connection-ids-non-compliant\r\n\r\n> These client-generated CIDs might not conform to the expectations of the routing algorithm and therefore not be routable by the load balancer. Those that are not routable are \"non-compliant DCIDs\" and receive similar treatment regardless of why they're non-compliant:\r\n\r\nI'm happy to write a PR if others find non-compliant potentially confusing as well.",
+      "createdAt": "2021-03-10T16:33:04Z",
+      "updatedAt": "2021-03-12T22:31:52Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I like it. Let's go with it.",
+          "createdAt": "2021-03-12T22:31:52Z",
+          "updatedAt": "2021-03-12T22:31:52Z"
+        }
+      ]
+    },
+    {
+      "number": 99,
+      "id": "MDU6SXNzdWU4MjgwMzc4MTQ=",
+      "title": "Consider an alternative name to 'arbitrary' algorithm",
+      "url": "https://github.com/quicwg/load-balancers/issues/99",
+      "state": "OPEN",
+      "author": "ianswett",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "I'd suggest 'Fallback' or another word than arbitrary.\r\n\r\nA definition of Arbitrary is: \"Based on random choice or personal whim, rather than any reason or system.\"\r\n\r\nIn fact, there are sensible constraints on this algorithm to ensure routing works correctly for non-compliant CIDs and connections don't fail.",
+      "createdAt": "2021-03-10T16:54:03Z",
+      "updatedAt": "2021-03-12T22:31:22Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Agreed.",
+          "createdAt": "2021-03-12T22:31:22Z",
+          "updatedAt": "2021-03-12T22:31:22Z"
         }
       ]
     }
@@ -5043,7 +5105,7 @@
       "labels": [],
       "body": "Here are some suggestions from my first pass, but overall I think the static vs dynamic server ID allocation idea works nicely.\r\n\r\n2 Q's:\r\n- Is the definition of non-compliant different at LB and server in some cases?\r\n- Might non-routable be a better term than non-compliant?",
       "createdAt": "2021-02-05T02:19:53Z",
-      "updatedAt": "2021-03-05T17:01:24Z",
+      "updatedAt": "2021-03-05T17:06:09Z",
       "baseRepository": "quicwg/load-balancers",
       "baseRefName": "master",
       "baseRefOid": "c9898856f1ae54b27bca79a0852e03d5e2b018fd",
@@ -5056,7 +5118,138 @@
       "mergeCommit": {
         "oid": "710f916f4a6f41071e0ca64665a6a3975bd0e3d4"
       },
+      "comments": [
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> Here are some suggestions from my first pass, but overall I think the static vs dynamic server ID allocation idea works nicely.\r\n> \r\n\r\nThanks, I merged your suggestions.\r\n\r\n> 2 Q's:\r\n> \r\n>     * Is the definition of non-compliant different at LB and server in some cases?\r\n\r\nYes, they can be different because the perception of the configuration is different. In general, during configuration updates the LB will have a configs that some servers don't. Therefore, a DCID with those CR bits will be compliant at the LB and non-compliant at the server.\r\n\r\nWith static allocation, servers don't do anything with non-compliant DCIDs, so this is irrelevant. With dynamic allocation, it means that the LB will allocate an SID that the server doesn't know anything about, until:\r\n1) the allocation times out\r\n2) the LB has the occasion to forward another packet with that SID to the server when the server has the configuration.\r\n\r\n> \r\n>     * Might non-routable be a better term than non-compliant?\r\n\r\nI don't feel strongly about this, but it works for me. If you want to file a PR with this change I'd approve it.\r\n",
+          "createdAt": "2021-03-05T17:06:09Z",
+          "updatedAt": "2021-03-05T17:06:09Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 97,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTg1ODM4NTIz",
+      "title": "Clarify Retry Service handling of non-Initial Packets",
+      "url": "https://github.com/quicwg/load-balancers/pull/97",
+      "state": "MERGED",
+      "author": "martinduke",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #96",
+      "createdAt": "2021-03-05T19:52:37Z",
+      "updatedAt": "2021-03-12T22:32:29Z",
+      "baseRepository": "quicwg/load-balancers",
+      "baseRefName": "master",
+      "baseRefOid": "710f916f4a6f41071e0ca64665a6a3975bd0e3d4",
+      "headRepository": "quicwg/load-balancers",
+      "headRefName": "retry-non-initial",
+      "headRefOid": "f89e6bdc7b578a3e683925ed64eef7fbd106e504",
+      "closedAt": "2021-03-12T22:32:28Z",
+      "mergedAt": "2021-03-12T22:32:28Z",
+      "mergedBy": "martinduke",
+      "mergeCommit": {
+        "oid": "b425b1c36600166dc83fed5d72114b79f4dafd8a"
+      },
       "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjA1NTc0MTYw",
+          "commit": {
+            "abbreviatedOid": "6b0b864"
+          },
+          "author": "nibanks",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-03-05T20:26:43Z",
+          "updatedAt": "2021-03-05T20:26:43Z",
+          "comments": [
+            {
+              "originalPosition": 22,
+              "body": "Do you mean a non-Initial & non-1-RTT packet here? You respond to an unknown 1-RTT packet with a stateless reset.",
+              "createdAt": "2021-03-05T20:26:43Z",
+              "updatedAt": "2021-03-05T20:57:49Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjA1NTc1NDgy",
+          "commit": {
+            "abbreviatedOid": "6b0b864"
+          },
+          "author": "nibanks",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-03-05T20:28:49Z",
+          "updatedAt": "2021-03-05T20:28:49Z",
+          "comments": [
+            {
+              "originalPosition": 29,
+              "body": "\"valid and invalid packets\" here refers to \"valid and invalid non-Initial packets\" right? Probably worth clarifying.",
+              "createdAt": "2021-03-05T20:28:49Z",
+              "updatedAt": "2021-03-05T20:57:49Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjA1NTkyMjI2",
+          "commit": {
+            "abbreviatedOid": "6b0b864"
+          },
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-03-05T20:56:32Z",
+          "updatedAt": "2021-03-05T20:56:33Z",
+          "comments": [
+            {
+              "originalPosition": 22,
+              "body": "Oh, good point.",
+              "createdAt": "2021-03-05T20:56:33Z",
+              "updatedAt": "2021-03-05T20:57:49Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 100,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTkxNjcyNzc4",
+      "title": "Changing wording about server/service synchronization",
+      "url": "https://github.com/quicwg/load-balancers/pull/100",
+      "state": "OPEN",
+      "author": "fiestajetsam",
+      "authorAssociation": "FIRST_TIME_CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This is in response to a post @wbl made on [the mailing list](https://mailarchive.ietf.org/arch/msg/quic/xcP0cwxpu1GcUnl4_XSBN70hF8E/).",
+      "createdAt": "2021-03-12T13:18:04Z",
+      "updatedAt": "2021-03-12T22:27:37Z",
+      "baseRepository": "quicwg/load-balancers",
+      "baseRefName": "master",
+      "baseRefOid": "710f916f4a6f41071e0ca64665a6a3975bd0e3d4",
+      "headRepository": "fiestajetsam/load-balancers",
+      "headRefName": "time",
+      "headRefOid": "644a796fc51f5a7a038ceca36934bd42f8ea1995",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Thanks for the PR!\r\n\r\nSo as an interoperability standard, if the retry service encodes \"4000\", what does the server do with that? Do we need to add a config parameter for the time_t that serves as time 0?",
+          "createdAt": "2021-03-12T22:27:37Z",
+          "updatedAt": "2021-03-12T22:27:37Z"
+        }
+      ],
       "reviews": []
     }
   ]

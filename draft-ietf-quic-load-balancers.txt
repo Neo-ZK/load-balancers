@@ -5,8 +5,8 @@
 QUIC                                                             M. Duke
 Internet-Draft                                         F5 Networks, Inc.
 Intended status: Standards Track                                N. Banks
-Expires: 13 September 2021                                     Microsoft
-                                                           12 March 2021
+Expires: 19 September 2021                                     Microsoft
+                                                           18 March 2021
 
 
             QUIC-LB: Generating Routable QUIC Connection IDs
@@ -53,12 +53,12 @@ Status of This Memo
 
 
 
-Duke & Banks            Expires 13 September 2021               [Page 1]
+Duke & Banks            Expires 19 September 2021               [Page 1]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
 
-   This Internet-Draft will expire on 13 September 2021.
+   This Internet-Draft will expire on 19 September 2021.
 
 Copyright Notice
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Duke & Banks            Expires 13 September 2021               [Page 2]
+Duke & Banks            Expires 19 September 2021               [Page 2]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -165,7 +165,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021               [Page 3]
+Duke & Banks            Expires 19 September 2021               [Page 3]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -221,7 +221,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021               [Page 4]
+Duke & Banks            Expires 19 September 2021               [Page 4]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -277,7 +277,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021               [Page 5]
+Duke & Banks            Expires 19 September 2021               [Page 5]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -333,7 +333,7 @@ Example Structure {
 
 
 
-Duke & Banks            Expires 13 September 2021               [Page 6]
+Duke & Banks            Expires 19 September 2021               [Page 6]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -389,7 +389,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021               [Page 7]
+Duke & Banks            Expires 19 September 2021               [Page 7]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -445,7 +445,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021               [Page 8]
+Duke & Banks            Expires 19 September 2021               [Page 8]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -501,7 +501,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021               [Page 9]
+Duke & Banks            Expires 19 September 2021               [Page 9]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -557,7 +557,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 10]
+Duke & Banks            Expires 19 September 2021              [Page 10]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -613,7 +613,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 11]
+Duke & Banks            Expires 19 September 2021              [Page 11]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -669,7 +669,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 12]
+Duke & Banks            Expires 19 September 2021              [Page 12]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -725,7 +725,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 13]
+Duke & Banks            Expires 19 September 2021              [Page 13]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -781,7 +781,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 14]
+Duke & Banks            Expires 19 September 2021              [Page 14]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -837,7 +837,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 15]
+Duke & Banks            Expires 19 September 2021              [Page 15]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -893,7 +893,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 16]
+Duke & Banks            Expires 19 September 2021              [Page 16]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -949,7 +949,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 17]
+Duke & Banks            Expires 19 September 2021              [Page 17]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -1005,7 +1005,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 18]
+Duke & Banks            Expires 19 September 2021              [Page 18]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -1061,7 +1061,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 19]
+Duke & Banks            Expires 19 September 2021              [Page 19]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -1117,7 +1117,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 20]
+Duke & Banks            Expires 19 September 2021              [Page 20]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -1173,7 +1173,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 21]
+Duke & Banks            Expires 19 September 2021              [Page 21]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -1229,7 +1229,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 22]
+Duke & Banks            Expires 19 September 2021              [Page 22]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -1276,19 +1276,23 @@ Internet-Draft                   QUIC-LB                      March 2021
    packets in response to Initial packets that don't include a valid
    token.
 
-   Both server and service must have access to Universal time, though
-   tight synchronization is unnecessary.
+   Both server and service must have time synchronized with respect to
+   one another to prevent tokens being incorrectly marked as expired,
+   though tight synchronization is unnecessary.
+
+
+
+
+
+
+Duke & Banks            Expires 19 September 2021              [Page 23]
+
+Internet-Draft                   QUIC-LB                      March 2021
+
 
    The tokens are protected using AES128-GCM AEAD, as explained in
    Section 7.3.1.  All tokens, generated by either the server or retry
    service, MUST use the following format, which includes:
-
-
-
-Duke & Banks            Expires 13 September 2021              [Page 23]
-
-Internet-Draft                   QUIC-LB                      March 2021
-
 
    *  A 96 bit unique token number transmitted in clear text, but
       protected as part of the AEAD associated data.
@@ -1333,18 +1337,20 @@ Internet-Draft                   QUIC-LB                      March 2021
 
    The token body has the following fields:
 
+
+
+
+
+Duke & Banks            Expires 19 September 2021              [Page 24]
+
+Internet-Draft                   QUIC-LB                      March 2021
+
+
    ODCIL: The original destination connection ID length.  Tokens in
    NEW_TOKEN frames MUST set this field to zero.
 
    RSCIL: The retry source connection ID length.  Tokens in NEW_TOKEN
    frames MUST set this field to zero.
-
-
-
-Duke & Banks            Expires 13 September 2021              [Page 24]
-
-Internet-Draft                   QUIC-LB                      March 2021
-
 
    Port: The Source Port of the UDP datagram that triggered the Retry
    packet.  This field MUST be present if and only if the ODCIL is
@@ -1388,19 +1394,20 @@ Internet-Draft                   QUIC-LB                      March 2021
 
    The tokens are protected using AES128-GCM as follows:
 
+
+
+
+Duke & Banks            Expires 19 September 2021              [Page 25]
+
+Internet-Draft                   QUIC-LB                      March 2021
+
+
    *  The token key and IV are retrieved using the Key Sequence.
 
    *  The nonce, N, is formed by combining the IV with the 96 bit unique
       token number.  The 96 bits of the unique token number are left-
       padded with zeros to the size of the IV.  The exclusive OR of the
       padded unique token number and the IV forms the AEAD nonce.
-
-
-
-Duke & Banks            Expires 13 September 2021              [Page 25]
-
-Internet-Draft                   QUIC-LB                      March 2021
-
 
    *  The associated data is a formatted as a pseudo header by combining
       the cleartext part of the token with the IP address of the client.
@@ -1443,20 +1450,18 @@ Internet-Draft                   QUIC-LB                      March 2021
    match the expected value.  (By construction, the AEAD checksum will
    only match if the client IP Address also matches.)
 
+
+
+
+Duke & Banks            Expires 19 September 2021              [Page 26]
+
+Internet-Draft                   QUIC-LB                      March 2021
+
+
    If the token checksum passes, and the ODCIL and RSCIL fields are both
    zero, then this is a NEW_TOKEN token generated by the server.
    Processing of NEW_TOKEN tokens is subtly different from Retry tokens,
    as described below.
-
-
-
-
-
-
-Duke & Banks            Expires 13 September 2021              [Page 26]
-
-Internet-Draft                   QUIC-LB                      March 2021
-
 
    The service SHOULD drop a packet containing a token where the ODCIL
    is greater than zero and less than the minimum number of octets for a
@@ -1500,19 +1505,20 @@ Internet-Draft                   QUIC-LB                      March 2021
    retry_source_connection_id transport parameter, with length equal to
    RSCIL.
 
+
+
+
+
+Duke & Banks            Expires 19 September 2021              [Page 27]
+
+Internet-Draft                   QUIC-LB                      March 2021
+
+
    For QUIC versions the service does not support, the server MAY use
    any token format.
 
    As discussed in [QUIC-TRANSPORT], a server MUST NOT send a Retry
    packet in response to an Initial packet that contains a retry token.
-
-
-
-
-Duke & Banks            Expires 13 September 2021              [Page 27]
-
-Internet-Draft                   QUIC-LB                      March 2021
-
 
 8.  Configuration Requirements
 
@@ -1559,13 +1565,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-
-
-
-
-
-
-Duke & Banks            Expires 13 September 2021              [Page 28]
+Duke & Banks            Expires 19 September 2021              [Page 28]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -1621,7 +1621,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 29]
+Duke & Banks            Expires 19 September 2021              [Page 29]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -1677,7 +1677,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 30]
+Duke & Banks            Expires 19 September 2021              [Page 30]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -1733,7 +1733,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 31]
+Duke & Banks            Expires 19 September 2021              [Page 31]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -1789,7 +1789,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 32]
+Duke & Banks            Expires 19 September 2021              [Page 32]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -1845,7 +1845,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 33]
+Duke & Banks            Expires 19 September 2021              [Page 33]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -1901,7 +1901,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 34]
+Duke & Banks            Expires 19 September 2021              [Page 34]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -1957,7 +1957,7 @@ module ietf-quic-lb {
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 35]
+Duke & Banks            Expires 19 September 2021              [Page 35]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -2013,7 +2013,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 36]
+Duke & Banks            Expires 19 September 2021              [Page 36]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -2069,7 +2069,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 37]
+Duke & Banks            Expires 19 September 2021              [Page 37]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -2125,7 +2125,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 38]
+Duke & Banks            Expires 19 September 2021              [Page 38]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -2181,7 +2181,7 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 39]
+Duke & Banks            Expires 19 September 2021              [Page 39]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -2237,7 +2237,7 @@ Appendix B.  Load Balancer Test Vectors
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 40]
+Duke & Banks            Expires 19 September 2021              [Page 40]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -2293,7 +2293,7 @@ B.1.  Plaintext Connection ID Algorithm
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 41]
+Duke & Banks            Expires 19 September 2021              [Page 41]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -2349,7 +2349,7 @@ B.2.  Stream Cipher Connection ID Algorithm
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 42]
+Duke & Banks            Expires 19 September 2021              [Page 42]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -2405,7 +2405,7 @@ B.3.  Block Cipher Connection ID Algorithm
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 43]
+Duke & Banks            Expires 19 September 2021              [Page 43]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -2461,7 +2461,7 @@ cid 1024412bfe25f4547510204bdda6143814 sid 8a8dd3d036 su 4b12933a135e5eaaebc6fd
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 44]
+Duke & Banks            Expires 19 September 2021              [Page 44]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -2517,7 +2517,7 @@ D.4.  since-draft-ietf-quic-load-balancers-03
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 45]
+Duke & Banks            Expires 19 September 2021              [Page 45]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -2573,7 +2573,7 @@ D.9.  Since draft-duke-quic-load-balancers-05
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 46]
+Duke & Banks            Expires 19 September 2021              [Page 46]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -2629,7 +2629,7 @@ Authors' Addresses
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 47]
+Duke & Banks            Expires 19 September 2021              [Page 47]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
@@ -2685,4 +2685,4 @@ Internet-Draft                   QUIC-LB                      March 2021
 
 
 
-Duke & Banks            Expires 13 September 2021              [Page 48]
+Duke & Banks            Expires 19 September 2021              [Page 48]

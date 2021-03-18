@@ -1875,12 +1875,12 @@ Internet-Draft                   QUIC-LB                      March 2021
    headers to increase the size of the load balancer's permanent or
    provisional table.
 
-   An attack on the provisional table would simply send each CID with
-   many fourtuples.  If no 1-RTT packet never arrives, the entry will
-   simply persist in the provisional table.  Load balancers are
-   encouraged to time out entries that never receive a short header
-   packet, but this timeout SHOULD be well in excess of the maximum
-   conceivable duration of a QUIC handshake.
+   An attack on the provisional table would simply send each CID in long
+   headers with many different fourtuples.  If no 1-RTT packet never
+   arrives, the entry will simply persist in the provisional table.
+   Load balancers are encouraged to time out entries that never receive
+   a short header packet, but this timeout SHOULD be well in excess of
+   the maximum conceivable duration of a QUIC handshake.
 
    An attack on the permanent table would follow each long header with a
    short header that encoded the same SID.  The encoding CIDs in the two
@@ -2100,6 +2100,8 @@ Internet-Draft                   QUIC-LB                      March 2021
 
       leaf dynamic-sid {
         type boolean;
+        description
+          "If true, server IDs are allocated dynamically.";
       }
 
       leaf server-id-length {
@@ -2121,8 +2123,6 @@ Internet-Draft                   QUIC-LB                      March 2021
            by sid-allocation, cid-key, and nonce-length.";
       }
 
-      list server-id-mappings {
-
 
 
 Duke & Banks            Expires 19 September 2021              [Page 38]
@@ -2130,6 +2130,7 @@ Duke & Banks            Expires 19 September 2021              [Page 38]
 Internet-Draft                   QUIC-LB                      March 2021
 
 
+      list server-id-mappings {
         when "not(../dynamic-sid)";
         key "server-id";
         description "Statically allocated Server IDs";
@@ -2177,7 +2178,6 @@ Internet-Draft                   QUIC-LB                      March 2021
         description
           "Are unsupported versions not in version-exceptions allowed
            or denied?";
-      }
 
 
 
@@ -2185,6 +2185,8 @@ Duke & Banks            Expires 19 September 2021              [Page 39]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
+
+      }
 
       leaf-list version-exceptions {
         type uint32;
@@ -2228,8 +2230,6 @@ Internet-Draft                   QUIC-LB                      March 2021
 A.1.  Tree Diagram
 
    This summary of the YANG model uses the notation in [RFC8340].
-
-
 
 
 

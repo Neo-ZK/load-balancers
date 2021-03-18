@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-03-18T15:13:04.093617+00:00",
+  "timestamp": "2021-03-18T23:14:00.078544+00:00",
   "repo": "quicwg/load-balancers",
   "labels": [
     {
@@ -1808,7 +1808,7 @@
       "labels": [],
       "body": "Today, an \"lb_timeout\" parameter tells LBs how long they need to save an SID allocation after it's last observed on an incoming packet. Servers may have to retire CIDs when they're approaching this limit. It's the only current method of getting rid of these, as we lack any sort of in-band mechanism for the two entities to communicate.\r\n\r\nAdvantages:\r\n- servers have more SIDs to choose from, which dramatically improves the entropy of PCID (where, admittedly, the operator has chosen not to care about concealing the mapping)\r\n- the server is seldom compelled to retire active CIDs, so the overhead of NEW/RETIRE_CONNECTION_ID frames is low\r\n\r\nDisadvantages:\r\n- If the server ID space >> the number of servers, over time the LB's table gets very large, to the extent it could challenge the RAM of the device. Careful selection of a server ID length can help, but that's putting a lot on the operator.\r\n- The lb_timeout mechanism is annoying because LBs that store a little bit of state have to inspect every packet to make a note of the last time it observed an SID. Servers have to do the same to check when things expire. This seems easy to mess up.\r\n- Servers also have to decode every incoming Initial CID to extract the SID.\r\n\r\nAn alternative would configure servers to keep a small number of SIDs. This could be as low as 1 but might be 8 or 16. If an allocatable SID arrives at the server, if it does not *instantly* use that SID in the CID it sends with the server hello, it forfeits the allocation.\r\n\r\nExample of acceptance:\r\n- SID 0x14 arrives in a Client Initial. LB hashes it to a server and adds it to a hash table of provisional allocations\r\n- Server generates CID using 0x14 and sends it the Server Initial, adding it to its list of server IDs\r\n- LB notes that the first inbound short header encoded 0x14 and makes it a permanent allocation\r\n\r\nExample of rejection\r\n-  SID 0x15 arrives in a Client Initial. LB hashes it to a server and adds it to a hash table of provisional allocations\r\n-  Other long headers with 0x15, with any 4-tuple, also go to the server thanks to the provisional list (you can't be provisional to two servers!)\r\n- Server generates a CID that encodes 0x14.\r\n- LB notes that the first inbound short header did not encode 0x15 and decrements the ref count for the provisional allocation, deleting it if the ref count is zero.\r\n\r\nWe could even make it so the server MUST accept the first n that it can; then, the LB need not even do a provisional allocation after that peer has reached the threshold.\r\n\r\nAdvantages:\r\n- much fewer resources for SID tables\r\n- no timers, less CID parsing & inspection\r\n- the architecture doesn't mandate more CID retiring due to changing SIDs\r\n\r\nDisadvantages:\r\n- ?",
       "createdAt": "2021-03-13T01:04:38Z",
-      "updatedAt": "2021-03-13T01:38:56Z",
+      "updatedAt": "2021-03-18T21:37:25Z",
       "closedAt": null,
       "comments": [
         {
@@ -1817,6 +1817,13 @@
           "body": "Can't make it a MUST for the server to take the first N SIDs; if it has its own load balancer (eg routing to multiple cores) it will have to wait until each of them has gotten an SID, which might take a while.",
           "createdAt": "2021-03-13T01:38:56Z",
           "updatedAt": "2021-03-13T01:38:56Z"
+        },
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This has a trivial attack: If I send a storm of initial packets with random CIDs, followed by 1RTT packets with the same CID, I force the LB to add it to its table, rapidly filling it up. We could fix this by forcing the LB to sniff SCIDs from the server instead of 1-RTT packets, which seems a little gross.\r\n\r\nFor not-PCID, it would be sufficient to simply check that there's a new CID, even if it encodes the same SID.",
+          "createdAt": "2021-03-18T20:20:57Z",
+          "updatedAt": "2021-03-18T21:37:25Z"
         }
       ]
     },
@@ -3649,7 +3656,7 @@
       "labels": [],
       "body": "Addresses #8 and #16.",
       "createdAt": "2020-11-03T22:34:37Z",
-      "updatedAt": "2020-12-11T23:31:40Z",
+      "updatedAt": "2021-03-18T19:19:27Z",
       "baseRepository": "quicwg/load-balancers",
       "baseRefName": "master",
       "baseRefOid": "5d17ce83c507dd6c7d2a12308fba6f129a7b7e0d",
@@ -5206,7 +5213,7 @@
       "labels": [],
       "body": "Fixes #96",
       "createdAt": "2021-03-05T19:52:37Z",
-      "updatedAt": "2021-03-12T22:32:29Z",
+      "updatedAt": "2021-03-18T19:19:36Z",
       "baseRepository": "quicwg/load-balancers",
       "baseRefName": "master",
       "baseRefOid": "710f916f4a6f41071e0ca64665a6a3975bd0e3d4",

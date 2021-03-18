@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-03-12T22:32:49.648120+00:00",
+  "timestamp": "2021-03-18T15:13:04.093617+00:00",
   "repo": "quicwg/load-balancers",
   "labels": [
     {
@@ -1231,7 +1231,7 @@
       "id": "MDU6SXNzdWU3NjMxNDQ0MTM=",
       "title": "PCID without SID configuration?",
       "url": "https://github.com/quicwg/load-balancers/issues/64",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinduke",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -1242,8 +1242,8 @@
       ],
       "body": "@ianswett proposed a PCID design that assigns SIDs on the fly instead of having to pre-configure them. There are drawbacks but it has some nice properties.",
       "createdAt": "2020-12-12T01:21:15Z",
-      "updatedAt": "2021-01-12T21:15:42Z",
-      "closedAt": null,
+      "updatedAt": "2021-03-15T23:32:05Z",
+      "closedAt": "2021-03-15T23:32:05Z",
       "comments": [
         {
           "author": "martinduke",
@@ -1251,6 +1251,13 @@
           "body": "This is merged, but I'm going to take the question of what we can do with these dueling plaintext designs to the list.",
           "createdAt": "2021-01-11T21:37:48Z",
           "updatedAt": "2021-01-11T21:37:48Z"
+        },
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "List discussion was not helpful; closing this with the dynamic method still in the draft.",
+          "createdAt": "2021-03-15T23:32:05Z",
+          "updatedAt": "2021-03-15T23:32:05Z"
         }
       ]
     },
@@ -1788,6 +1795,64 @@
           "updatedAt": "2021-03-12T22:31:22Z"
         }
       ]
+    },
+    {
+      "number": 101,
+      "id": "MDU6SXNzdWU4MzA3NjMxODU=",
+      "title": "Reduce load of Dynamic SID allocation",
+      "url": "https://github.com/quicwg/load-balancers/issues/101",
+      "state": "OPEN",
+      "author": "martinduke",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Today, an \"lb_timeout\" parameter tells LBs how long they need to save an SID allocation after it's last observed on an incoming packet. Servers may have to retire CIDs when they're approaching this limit. It's the only current method of getting rid of these, as we lack any sort of in-band mechanism for the two entities to communicate.\r\n\r\nAdvantages:\r\n- servers have more SIDs to choose from, which dramatically improves the entropy of PCID (where, admittedly, the operator has chosen not to care about concealing the mapping)\r\n- the server is seldom compelled to retire active CIDs, so the overhead of NEW/RETIRE_CONNECTION_ID frames is low\r\n\r\nDisadvantages:\r\n- If the server ID space >> the number of servers, over time the LB's table gets very large, to the extent it could challenge the RAM of the device. Careful selection of a server ID length can help, but that's putting a lot on the operator.\r\n- The lb_timeout mechanism is annoying because LBs that store a little bit of state have to inspect every packet to make a note of the last time it observed an SID. Servers have to do the same to check when things expire. This seems easy to mess up.\r\n- Servers also have to decode every incoming Initial CID to extract the SID.\r\n\r\nAn alternative would configure servers to keep a small number of SIDs. This could be as low as 1 but might be 8 or 16. If an allocatable SID arrives at the server, if it does not *instantly* use that SID in the CID it sends with the server hello, it forfeits the allocation.\r\n\r\nExample of acceptance:\r\n- SID 0x14 arrives in a Client Initial. LB hashes it to a server and adds it to a hash table of provisional allocations\r\n- Server generates CID using 0x14 and sends it the Server Initial, adding it to its list of server IDs\r\n- LB notes that the first inbound short header encoded 0x14 and makes it a permanent allocation\r\n\r\nExample of rejection\r\n-  SID 0x15 arrives in a Client Initial. LB hashes it to a server and adds it to a hash table of provisional allocations\r\n-  Other long headers with 0x15, with any 4-tuple, also go to the server thanks to the provisional list (you can't be provisional to two servers!)\r\n- Server generates a CID that encodes 0x14.\r\n- LB notes that the first inbound short header did not encode 0x15 and decrements the ref count for the provisional allocation, deleting it if the ref count is zero.\r\n\r\nWe could even make it so the server MUST accept the first n that it can; then, the LB need not even do a provisional allocation after that peer has reached the threshold.\r\n\r\nAdvantages:\r\n- much fewer resources for SID tables\r\n- no timers, less CID parsing & inspection\r\n- the architecture doesn't mandate more CID retiring due to changing SIDs\r\n\r\nDisadvantages:\r\n- ?",
+      "createdAt": "2021-03-13T01:04:38Z",
+      "updatedAt": "2021-03-13T01:38:56Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Can't make it a MUST for the server to take the first N SIDs; if it has its own load balancer (eg routing to multiple cores) it will have to wait until each of them has gotten an SID, which might take a while.",
+          "createdAt": "2021-03-13T01:38:56Z",
+          "updatedAt": "2021-03-13T01:38:56Z"
+        }
+      ]
+    },
+    {
+      "number": 102,
+      "id": "MDU6SXNzdWU4MzIwMjY4NjM=",
+      "title": "Is the non-shared-state use case realistic?",
+      "url": "https://github.com/quicwg/load-balancers/issues/102",
+      "state": "OPEN",
+      "author": "martinduke",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [
+        "needs-discussion"
+      ],
+      "body": "Buried deep in Sec 7.2.2:\r\n\r\nIn **inactive mode**, the service MUST forward all packets that have no token or a token with the first bit set to '1'. It MUST validate all tokens with the first bit set to '0'. If successful, the service MUST forward the packet with the token intact. If unsuccessful, **it MUST either drop the packet or forward it with the token removed**. The latter requires decryption and re-encryption of the entire Initial packet to avoid authentication failure. Forwarding the packet causes the server to respond without the original_destination_connection_id transport parameter, which preserves the normal QUIC signal to the client that there is an on-path attacker.\r\n\r\nMy understanding of these services is that they will be injected in the path only when under DoS attack. According to this, something has to hang around to validate Retry tokens. Is this feasible?",
+      "createdAt": "2021-03-15T17:20:47Z",
+      "updatedAt": "2021-03-15T17:23:27Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 103,
+      "id": "MDU6SXNzdWU4MzIyNzk4MzQ=",
+      "title": "Dynamic SIDs and High Availability",
+      "url": "https://github.com/quicwg/load-balancers/issues/103",
+      "state": "OPEN",
+      "author": "martinduke",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "How does a dynamic framework survive an HA handover? It would seem to lose all the SID allocations and break all connections.",
+      "createdAt": "2021-03-15T23:30:48Z",
+      "updatedAt": "2021-03-15T23:30:48Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -5223,24 +5288,26 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NTkxNjcyNzc4",
       "title": "Changing wording about server/service synchronization",
       "url": "https://github.com/quicwg/load-balancers/pull/100",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "fiestajetsam",
-      "authorAssociation": "FIRST_TIME_CONTRIBUTOR",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "This is in response to a post @wbl made on [the mailing list](https://mailarchive.ietf.org/arch/msg/quic/xcP0cwxpu1GcUnl4_XSBN70hF8E/).",
       "createdAt": "2021-03-12T13:18:04Z",
-      "updatedAt": "2021-03-12T22:27:37Z",
+      "updatedAt": "2021-03-18T15:12:35Z",
       "baseRepository": "quicwg/load-balancers",
       "baseRefName": "master",
       "baseRefOid": "710f916f4a6f41071e0ca64665a6a3975bd0e3d4",
       "headRepository": "fiestajetsam/load-balancers",
       "headRefName": "time",
-      "headRefOid": "644a796fc51f5a7a038ceca36934bd42f8ea1995",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "6829983553597e6868e0ae4011928134224843b8",
+      "closedAt": "2021-03-18T15:12:35Z",
+      "mergedAt": "2021-03-18T15:12:34Z",
+      "mergedBy": "martinduke",
+      "mergeCommit": {
+        "oid": "ef833f7843d1ab48963bcb4572e74f3a49a5fe9c"
+      },
       "comments": [
         {
           "author": "martinduke",
@@ -5248,9 +5315,86 @@
           "body": "Thanks for the PR!\r\n\r\nSo as an interoperability standard, if the retry service encodes \"4000\", what does the server do with that? Do we need to add a config parameter for the time_t that serves as time 0?",
           "createdAt": "2021-03-12T22:27:37Z",
           "updatedAt": "2021-03-12T22:27:37Z"
+        },
+        {
+          "author": "wbl",
+          "authorAssociation": "NONE",
+          "body": "Timestamps should be absolute, not relative, in which case I'm not sure you need a 0. There's nothing special about midnight 1 January 1970.",
+          "createdAt": "2021-03-13T19:19:58Z",
+          "updatedAt": "2021-03-13T19:19:58Z"
+        },
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Ah, so you're just suggesting declaring a later date  to begin the epoch? Makes sense ",
+          "createdAt": "2021-03-13T20:22:33Z",
+          "updatedAt": "2021-03-13T20:22:33Z"
+        },
+        {
+          "author": "wbl",
+          "authorAssociation": "NONE",
+          "body": "Why do we need to have a sential time? If it's a precision vs. range issue then shifting the epoch makes sense.",
+          "createdAt": "2021-03-13T20:34:09Z",
+          "updatedAt": "2021-03-13T20:34:09Z"
+        },
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Sorry, I don't know what \"sential time\" is. What are you proposing?",
+          "createdAt": "2021-03-15T17:24:53Z",
+          "updatedAt": "2021-03-15T17:24:53Z"
+        },
+        {
+          "author": "wbl",
+          "authorAssociation": "NONE",
+          "body": "What I'm proposing is that we not treat any times differently. It's not clear to me why 4000 needed special treatment.",
+          "createdAt": "2021-03-16T02:32:50Z",
+          "updatedAt": "2021-03-16T03:16:39Z"
+        },
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "4000 is just an example. The intent of using the epoch was to have common agreement on when tokens expire without any QUIC-LB-specific coordination.\r\n\r\nThe current draft uses 1970 as a timebase, which absolutely makes integers longer than it needs to be. IIUC the PR doesn't have any baseline so it's unclear how the server and retry service are supposed to interpret each other's expiration times.\r\n\r\nAs we're probably speaking past each other: what, precisely, does the integer in this field indicate?\r\n",
+          "createdAt": "2021-03-16T18:45:22Z",
+          "updatedAt": "2021-03-16T18:45:22Z"
+        },
+        {
+          "author": "wbl",
+          "authorAssociation": "NONE",
+          "body": "It's the end of the validity period for the token in some convenient timebase.",
+          "createdAt": "2021-03-17T01:35:21Z",
+          "updatedAt": "2021-03-17T01:35:21Z"
+        },
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Alright, we agree on that. So this PR is being a little less precise on synchronization, which is fine, but isn't addressing the fact that we're counting from 1970. Fair enough.",
+          "createdAt": "2021-03-17T14:40:42Z",
+          "updatedAt": "2021-03-17T14:40:42Z"
         }
       ],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjE0Mzg4NDMy",
+          "commit": {
+            "abbreviatedOid": "644a796"
+          },
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-03-17T14:38:53Z",
+          "updatedAt": "2021-03-17T14:38:54Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "```suggestion\r\nBoth server and service must have time synchronized with respect to one another to prevent tokens\r\n```",
+              "createdAt": "2021-03-17T14:38:53Z",
+              "updatedAt": "2021-03-18T12:47:45Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

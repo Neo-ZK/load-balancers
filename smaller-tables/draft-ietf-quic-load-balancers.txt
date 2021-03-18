@@ -95,7 +95,7 @@ Table of Contents
        4.3.2.  Dynamic Allocation  . . . . . . . . . . . . . . . . .  12
    5.  Routing Algorithms  . . . . . . . . . . . . . . . . . . . . .  14
      5.1.  Plaintext CID Algorithm . . . . . . . . . . . . . . . . .  14
-       5.1.1.  Configuration Agent Actions . . . . . . . . . . . . .  14
+       5.1.1.  Configuration Agent Actions . . . . . . . . . . . . .  15
        5.1.2.  Load Balancer Actions . . . . . . . . . . . . . . . .  15
        5.1.3.  Server Actions  . . . . . . . . . . . . . . . . . . .  15
      5.2.  Stream Cipher CID Algorithm . . . . . . . . . . . . . . .  15
@@ -622,9 +622,17 @@ Internet-Draft                   QUIC-LB                      March 2021
 
    In the dynamic allocation method, the load balancer assigns server
    IDs dynamically so that configuration does not require fixed server
-   ID assignment.  This reduces linkability.  However, it requires state
-   at the load balancer that roughly scales with the number of
-   connections, until the server ID codespace is exhausted.
+   ID assignment.  This reduces linkability and simplifies
+   configuration.
+
+   To summarize, the load balancer forwards incoming Initial packets
+   arbitrarily and both load balancer and server are sometimes able to
+   infer a potential server ID allocation from the CID in the packet.
+   The server can signal acceptance of that allocation by using it
+   immediately, in which case both entities add it to their permanent
+   table.  Usually, however, the server will reject the allocation by
+   not using it, in which case it is not added to the permanent
+   assignment list.
 
 4.3.2.1.  Configuration Agent Actions
 
@@ -656,14 +664,6 @@ Internet-Draft                   QUIC-LB                      March 2021
       the load balancer routes the packet using an arbitrary algorithm
       (see Section 4.2).  It does not extract a server ID.
 
-   *  If there is a matching configuration, but the CID is not long
-      enough to apply the algorithm, the load balancer skips the first
-      octet of the CID and then reads a server ID from the following
-      octets, up to the server ID length.
-
-   *  Otherwise, the load balancer extracts the server ID in accordance
-      with the configured algorithm and parameters.
-
 
 
 
@@ -673,6 +673,14 @@ Duke & Banks            Expires 19 September 2021              [Page 12]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
+
+   *  If there is a matching configuration, but the CID is not long
+      enough to apply the algorithm, the load balancer skips the first
+      octet of the CID and then reads a server ID from the following
+      octets, up to the server ID length.
+
+   *  Otherwise, the load balancer extracts the server ID in accordance
+      with the configured algorithm and parameters.
 
    If the load balancer extracted a server ID already in the permanent
    or provisional table, it routes the packet accordingly.  If the
@@ -715,20 +723,19 @@ Internet-Draft                   QUIC-LB                      March 2021
       algorithm, extract a number of octets equal to the server ID
       length, beginning with the second octet.
 
-   *  If the DCID is long enough to decode, extract the server ID.
-
-   If the server ID is not already in its list, the server MUST decide
-   whether or not to immediately use it to encode a CID on the new
-   connection.  If it chooses to use it, it adds the server ID to its
-   list.  If it does not, it MUST NOT use the server ID in future CIDs.
-
-
 
 
 Duke & Banks            Expires 19 September 2021              [Page 13]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
+
+   *  If the DCID is long enough to decode, extract the server ID.
+
+   If the server ID is not already in its list, the server MUST decide
+   whether or not to immediately use it to encode a CID on the new
+   connection.  If it chooses to use it, it adds the server ID to its
+   list.  If it does not, it MUST NOT use the server ID in future CIDs.
 
    The server then processes the packet normally.
 
@@ -771,13 +778,6 @@ Internet-Draft                   QUIC-LB                      March 2021
      For Server Use (8..152-len(Server ID)),
    }
 
-                       Figure 3: Plaintext CID Format
-
-5.1.1.  Configuration Agent Actions
-
-   For static SID allocation, the server ID length is limited to 16
-   octets.  There are no parameters specific to this algorithm.
-
 
 
 
@@ -785,6 +785,13 @@ Duke & Banks            Expires 19 September 2021              [Page 14]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
+
+                       Figure 3: Plaintext CID Format
+
+5.1.1.  Configuration Agent Actions
+
+   For static SID allocation, the server ID length is limited to 16
+   octets.  There are no parameters specific to this algorithm.
 
 5.1.2.  Load Balancer Actions
 
@@ -825,13 +832,6 @@ Internet-Draft                   QUIC-LB                      March 2021
    pool, and determines a server ID length (in octets) sufficiently
    large to encode all server IDs, including potential future servers.
 
-   The configuration agent also selects a nonce length and an 16-octet
-   AES-ECB key to use for connection ID decryption.  The nonce length
-   MUST be at least 8 octets and no more than 16 octets.  The nonce
-   length and server ID length MUST sum to 19 or fewer octets, but
-   SHOULD sum to 15 or fewer to allow space for server use.
-
-
 
 
 
@@ -841,6 +841,12 @@ Duke & Banks            Expires 19 September 2021              [Page 15]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
+
+   The configuration agent also selects a nonce length and an 16-octet
+   AES-ECB key to use for connection ID decryption.  The nonce length
+   MUST be at least 8 octets and no more than 16 octets.  The nonce
+   length and server ID length MUST sum to 19 or fewer octets, but
+   SHOULD sum to 15 or fewer to allow space for server use.
 
 5.2.2.  Load Balancer Actions
 
@@ -884,12 +890,6 @@ Internet-Draft                   QUIC-LB                      March 2021
    The load balancer uses the the second through eleventh octets of the
    connection ID for the nonce, zero-pads it to 16 octets, uses xors the
    result with the twelfth and thirteenth octet.  The result is padded
-   with 14 octets of zeros and encrypted to obtain a mask that is xored
-   with the nonce octets.  Finally, the nonce octets are padded with six
-   octets of zeros, encrypted, and the first two octets xored with the
-   server ID octets to obtain the actual server ID.
-
-
 
 
 
@@ -897,6 +897,11 @@ Duke & Banks            Expires 19 September 2021              [Page 16]
 
 Internet-Draft                   QUIC-LB                      March 2021
 
+
+   with 14 octets of zeros and encrypted to obtain a mask that is xored
+   with the nonce octets.  Finally, the nonce octets are padded with six
+   octets of zeros, encrypted, and the first two octets xored with the
+   server ID octets to obtain the actual server ID.
 
    This three-pass algorithm is a simplified version of the FFX
    algorithm, with the property that each encrypted nonce value depends
@@ -941,11 +946,6 @@ Internet-Draft                   QUIC-LB                      March 2021
    }
 
                      Figure 5: Block Cipher CID Format
-
-
-
-
-
 
 
 

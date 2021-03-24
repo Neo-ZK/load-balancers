@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-03-18T23:14:00.078544+00:00",
+  "timestamp": "2021-03-24T16:45:21.413719+00:00",
   "repo": "quicwg/load-balancers",
   "labels": [
     {
@@ -1853,11 +1853,29 @@
       "state": "OPEN",
       "author": "martinduke",
       "authorAssociation": "CONTRIBUTOR",
-      "assignees": [],
+      "assignees": [
+        "ianswett"
+      ],
       "labels": [],
       "body": "How does a dynamic framework survive an HA handover? It would seem to lose all the SID allocations and break all connections.",
       "createdAt": "2021-03-15T23:30:48Z",
-      "updatedAt": "2021-03-15T23:30:48Z",
+      "updatedAt": "2021-03-23T20:21:06Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 105,
+      "id": "MDU6SXNzdWU4MzkwNzgzMzg=",
+      "title": "Applicability to DTLS 1.3",
+      "url": "https://github.com/quicwg/load-balancers/issues/105",
+      "state": "OPEN",
+      "author": "martinduke",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Almost by accident, QUIC-LB can also route DTLS 1.3 associations over UDP, as long as the client agrees to support connection IDs.\r\n\r\nThe Ciphertext packets match the short header in the relevant ways, and so can be routed without any issues.\r\n\r\nThe plaintext packets appear to be QUIC short headers, but as the second byte happens to always be 0xfe, QUIC-LB will 4-tuple route it.\r\n\r\nIIUC, this doesn't apply to earlier versions of DTLS. So, one can deploy DTLS behind a QUIC-LB infrastructure as long as\r\n1) Servers reject DTLS < 1.3\r\n2) Servers reject ClientHellos that do not have the connection_id extension.\r\n\r\nOne could also write a slightly different version of QUIC-LB that supported DTLS without reservations, but you'd have to be aware that the packet was DTLS and leverage information about the format of the first byte.",
+      "createdAt": "2021-03-23T20:06:29Z",
+      "updatedAt": "2021-03-23T20:06:29Z",
       "closedAt": null,
       "comments": []
     }
@@ -5402,6 +5420,32 @@
           ]
         }
       ]
+    },
+    {
+      "number": 104,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTk2MDQwNDAw",
+      "title": "Smaller tables",
+      "url": "https://github.com/quicwg/load-balancers/pull/104",
+      "state": "OPEN",
+      "author": "martinduke",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #101. This tweak, IMO, substantially improves dynamic allocation.",
+      "createdAt": "2021-03-18T23:46:20Z",
+      "updatedAt": "2021-03-18T23:46:24Z",
+      "baseRepository": "quicwg/load-balancers",
+      "baseRefName": "master",
+      "baseRefOid": "ef833f7843d1ab48963bcb4572e74f3a49a5fe9c",
+      "headRepository": "quicwg/load-balancers",
+      "headRefName": "smaller-tables",
+      "headRefOid": "6cf5924689f88c516abe16db28ceb63494ea8d05",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }

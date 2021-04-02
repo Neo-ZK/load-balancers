@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-03-24T16:45:21.413719+00:00",
+  "timestamp": "2021-04-02T21:48:10.662628+00:00",
   "repo": "quicwg/load-balancers",
   "labels": [
     {
@@ -1876,6 +1876,38 @@
       "body": "Almost by accident, QUIC-LB can also route DTLS 1.3 associations over UDP, as long as the client agrees to support connection IDs.\r\n\r\nThe Ciphertext packets match the short header in the relevant ways, and so can be routed without any issues.\r\n\r\nThe plaintext packets appear to be QUIC short headers, but as the second byte happens to always be 0xfe, QUIC-LB will 4-tuple route it.\r\n\r\nIIUC, this doesn't apply to earlier versions of DTLS. So, one can deploy DTLS behind a QUIC-LB infrastructure as long as\r\n1) Servers reject DTLS < 1.3\r\n2) Servers reject ClientHellos that do not have the connection_id extension.\r\n\r\nOne could also write a slightly different version of QUIC-LB that supported DTLS without reservations, but you'd have to be aware that the packet was DTLS and leverage information about the format of the first byte.",
       "createdAt": "2021-03-23T20:06:29Z",
       "updatedAt": "2021-03-23T20:06:29Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 107,
+      "id": "MDU6SXNzdWU4NDM1MTM2ODQ=",
+      "title": "More text on configuration sharing",
+      "url": "https://github.com/quicwg/load-balancers/issues/107",
+      "state": "OPEN",
+      "author": "martinduke",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Sec 11.4 recommends either separating mistrustful servers by IP, or assigning them different config rotation bits. The text is not adequate.\r\n\r\n- Separating by IP address undermines the privacy value of ECHO & DoH (see the MAPRG IETF 110 talk)\r\n- Any sub-IP routing has to be SNI-switched; if ECHO is operating, the load balancer must be a \"client-facing server\" in the ECHO architecture (draft-ietf-tls-esni Sec 3.1).\r\n- Doing SNI switching as an ECHO server and then just encoding the result in the config rotation bits leaks the information they're trying to conceal.\r\n- It might be worth it to fix up the \"arbitrary algorithm\" text to consider possible SNI switching.\r\n\r\nAs we migrate towards ECHO and DoH, maybe the best we can do is give all tenants on an IP the same config and try to obscure their co-tenancy as much as possible.",
+      "createdAt": "2021-03-29T15:57:49Z",
+      "updatedAt": "2021-03-29T15:57:49Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 108,
+      "id": "MDU6SXNzdWU4NDYzMjEyNTU=",
+      "title": "Confused about `AEAD Checksum` in retry token",
+      "url": "https://github.com/quicwg/load-balancers/issues/108",
+      "state": "OPEN",
+      "author": "william-zk",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Hi martin:\r\n\r\n1. It seems that draft limits the encryption algorithm of retry token must be `AES-128-GCM`, but the description of AEAD CheckSum is `AEAD Checksum (length depends on encryption algorithm)`.\r\n\r\n2. Further more, what is `AEAD Checksum` and why we need it? AEAD encryption algorithm just need `key, association data , iv` to do encryption/decryption and authentication.   ",
+      "createdAt": "2021-03-31T09:53:25Z",
+      "updatedAt": "2021-03-31T10:03:32Z",
       "closedAt": null,
       "comments": []
     }
@@ -5446,6 +5478,140 @@
       "mergeCommit": null,
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 106,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTk5ODk2MDc3",
+      "title": "Dtls",
+      "url": "https://github.com/quicwg/load-balancers/pull/106",
+      "state": "OPEN",
+      "author": "martinduke",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-03-24T17:30:10Z",
+      "updatedAt": "2021-04-02T21:47:37Z",
+      "baseRepository": "quicwg/load-balancers",
+      "baseRefName": "master",
+      "baseRefOid": "ef833f7843d1ab48963bcb4572e74f3a49a5fe9c",
+      "headRepository": "quicwg/load-balancers",
+      "headRefName": "dtls",
+      "headRefOid": "7ad67882348803aff02e4cb67e213f4c7427c3c8",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Fixes #105 ",
+          "createdAt": "2021-03-24T17:30:25Z",
+          "updatedAt": "2021-03-24T17:30:25Z"
+        },
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "To expand on the comment that we should explain how to parse DTLS:\r\n\r\nTo me, it is more important to remain as QUIC-version-invariant as possible than to support DTLS. DTLS-awareness implies a very specific set of assumptions about the first byte which are not consistent with version-invariance.\r\n\r\nThis PR is mostly non-normative text about what happens if you're also running DTLS on the same port in the server pool behind QUIC-LB. I've added a few normative statements about what DTLS servers should do to avoid the most serious problems, but I would rather delete the normative bits than expand the scope to fully support DTLS.\r\n\r\nI am open to the argument that this should be a non-normative appendix.\r\n",
+          "createdAt": "2021-03-25T17:38:56Z",
+          "updatedAt": "2021-03-25T17:38:56Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjIwMzQxMjQ4",
+          "commit": {
+            "abbreviatedOid": "2f2f55d"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "I'm ambivalent on this.  Especially this half-way approach.\r\n\r\nIf you are going to do DTLS, then for a tiny bit more text you can tell people how to find the CID.  And then you can deal with clients that don't want to support connection IDs properly also.",
+          "createdAt": "2021-03-25T00:50:49Z",
+          "updatedAt": "2021-03-25T00:57:06Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "DTLS 1.0 isn't getting connection ID support as far as I'm aware.",
+              "createdAt": "2021-03-25T00:50:50Z",
+              "updatedAt": "2021-04-02T21:47:37Z"
+            },
+            {
+              "originalPosition": 47,
+              "body": "It seems like, given the amount of text you just added for DTLS it would be trivial to identify how to match the first DTLS octet and then find the connection ID.  It's just a few bytes down at a fixed location.",
+              "createdAt": "2021-03-25T00:54:27Z",
+              "updatedAt": "2021-04-02T21:47:37Z"
+            },
+            {
+              "originalPosition": 72,
+              "body": "NEVER recommend downgrade.  Maybe just imply that a server that requires the use of connection IDs might not be able to deploy DTLS 1.3.",
+              "createdAt": "2021-03-25T00:55:57Z",
+              "updatedAt": "2021-04-02T21:47:37Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjIwMzQ1OTg2",
+          "commit": {
+            "abbreviatedOid": "2f2f55d"
+          },
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-03-25T01:04:50Z",
+          "updatedAt": "2021-03-25T01:04:51Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "Yes, this is addressing a couple of things:\r\n\r\n1) Running DTLS in the same infrastructure as QUIC on the same port. Will a plain old QUIC-LB load balancer break my stuff? The answer is no, except DTLS 1.3 when not using CIDs.\r\n2) #1, plus I want to use Connection IDs to be resistant to address changes. This will just not work for DTLS 1.2 but it will work fine for 1.3 unless the client refuses to use CIDs.",
+              "createdAt": "2021-03-25T01:04:50Z",
+              "updatedAt": "2021-04-02T21:47:37Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjIwMzQ2NTE2",
+          "commit": {
+            "abbreviatedOid": "2f2f55d"
+          },
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-03-25T01:06:19Z",
+          "updatedAt": "2021-03-25T01:06:19Z",
+          "comments": [
+            {
+              "originalPosition": 47,
+              "body": "I guess, but then you have to talk about demultiplexing QUIC and DTLS, the bit-grease extension, and you're breaking the almost-version-invariance of QUIC-LB pretty badly.\r\n\r\nThis draft has already got too much stuff in it, so I thought I'd just write down how DTLS would work out of the box. If people care about this use case I could write DTLS-LB or whatever.",
+              "createdAt": "2021-03-25T01:06:19Z",
+              "updatedAt": "2021-04-02T21:47:37Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjIwMzQ3NDI3",
+          "commit": {
+            "abbreviatedOid": "2f2f55d"
+          },
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-03-25T01:08:45Z",
+          "updatedAt": "2021-03-25T01:08:45Z",
+          "comments": [
+            {
+              "originalPosition": 72,
+              "body": "Yeah, downgrade is a gross suggestion, but it's the only way to continue. This is a case where DTLS 1.3 will often be fine but can negotiate itself into a mode that fails catastrophically.\r\n\r\nBut your second sentence is backwards. A TLS1.3 server MUST support connection IDs, or else the ciphertext packets will spray all over the place. The real problem is if the client refuses to use them.",
+              "createdAt": "2021-03-25T01:08:45Z",
+              "updatedAt": "2021-04-02T21:47:37Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

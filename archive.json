@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-04-02T21:48:10.662628+00:00",
+  "timestamp": "2021-04-03T18:32:46.708174+00:00",
   "repo": "quicwg/load-balancers",
   "labels": [
     {
@@ -1900,16 +1900,26 @@
       "id": "MDU6SXNzdWU4NDYzMjEyNTU=",
       "title": "Confused about `AEAD Checksum` in retry token",
       "url": "https://github.com/quicwg/load-balancers/issues/108",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "william-zk",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial"
+      ],
       "body": "Hi martin:\r\n\r\n1. It seems that draft limits the encryption algorithm of retry token must be `AES-128-GCM`, but the description of AEAD CheckSum is `AEAD Checksum (length depends on encryption algorithm)`.\r\n\r\n2. Further more, what is `AEAD Checksum` and why we need it? AEAD encryption algorithm just need `key, association data , iv` to do encryption/decryption and authentication.   ",
       "createdAt": "2021-03-31T09:53:25Z",
-      "updatedAt": "2021-03-31T10:03:32Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2021-04-02T21:58:19Z",
+      "closedAt": "2021-04-02T21:58:03Z",
+      "comments": [
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Hi William\r\n\r\n1) The checksum thing is a good point. I'll fix it.\r\n\r\n2) Like for QUIC packets themselves, there is an authentication tag that AES-GCM generates and we append it to the token. I am not a crypto expert, but I believe this is how the decoder detects if the AAD was changed or there's a problem with the ciphertext.",
+          "createdAt": "2021-04-02T21:55:41Z",
+          "updatedAt": "2021-04-02T21:55:41Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -5612,6 +5622,104 @@
           ]
         }
       ]
+    },
+    {
+      "number": 109,
+      "id": "MDExOlB1bGxSZXF1ZXN0NjA4Mjc0MzEz",
+      "title": "Replace \"non-compliant\" and \"arbitrary\"",
+      "url": "https://github.com/quicwg/load-balancers/pull/109",
+      "state": "OPEN",
+      "author": "martinduke",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #98 and #99",
+      "createdAt": "2021-04-02T22:11:58Z",
+      "updatedAt": "2021-04-03T18:32:22Z",
+      "baseRepository": "quicwg/load-balancers",
+      "baseRefName": "master",
+      "baseRefOid": "19fd1994889ad4face0ad11c0b84abd60d1b5cc7",
+      "headRepository": "quicwg/load-balancers",
+      "headRefName": "new-terms",
+      "headRefOid": "20d595aee3d614ddbfeee1369a2b29b41489d3f9",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjI3NDYxOTU3",
+          "commit": {
+            "abbreviatedOid": "2b0314b"
+          },
+          "author": "ianswett",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Thanks, this is a lot easier to read for me.",
+          "createdAt": "2021-04-03T14:32:25Z",
+          "updatedAt": "2021-04-03T14:32:25Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjI3NDc3NTc2",
+          "commit": {
+            "abbreviatedOid": "2b0314b"
+          },
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-04-03T18:31:04Z",
+          "updatedAt": "2021-04-03T18:32:00Z",
+          "comments": [
+            {
+              "originalPosition": 183,
+              "body": "```suggestion\r\n{{unroutable}} provides guidance about how load balancers should handle\r\n```",
+              "createdAt": "2021-04-03T18:31:04Z",
+              "updatedAt": "2021-04-03T18:32:22Z"
+            },
+            {
+              "originalPosition": 184,
+              "body": "```suggestion\r\nunroutable DCIDs. This guidance, and the implementation of an algorithm to\r\n```",
+              "createdAt": "2021-04-03T18:31:18Z",
+              "updatedAt": "2021-04-03T18:32:22Z"
+            },
+            {
+              "originalPosition": 193,
+              "body": "```suggestion\r\nof packets that contain unroutable DCIDs, and in extreme cases connection\r\n```",
+              "createdAt": "2021-04-03T18:31:36Z",
+              "updatedAt": "2021-04-03T18:32:22Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 110,
+      "id": "MDExOlB1bGxSZXF1ZXN0NjA4MjgyNzQx",
+      "title": "More text on tenants that share an IP",
+      "url": "https://github.com/quicwg/load-balancers/pull/110",
+      "state": "OPEN",
+      "author": "martinduke",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #107",
+      "createdAt": "2021-04-02T22:47:46Z",
+      "updatedAt": "2021-04-02T22:47:49Z",
+      "baseRepository": "quicwg/load-balancers",
+      "baseRefName": "master",
+      "baseRefOid": "19fd1994889ad4face0ad11c0b84abd60d1b5cc7",
+      "headRepository": "quicwg/load-balancers",
+      "headRefName": "shared-ip",
+      "headRefOid": "c143314bed226514d1cc103a86a7bc068cc3117e",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
